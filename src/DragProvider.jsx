@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-const isFirefox = /firefox/i.test(navigator.userAgent);
 const isIE = "ActiveXObject" in window;
 
 function preventDefaultHandler(e) {
@@ -28,11 +27,8 @@ export default class DragProvider extends React.Component {
     sourceNode: PropTypes.any,
     targetNode: PropTypes.any,
     onDragStart: PropTypes.func,
-    onDrop: PropTypes.func,
     onDragEnd: PropTypes.func,
-    onDragOver: PropTypes.func,
     onDragEnter: PropTypes.func,
-    onDragLeave: PropTypes.func,
     register: PropTypes.func,
     unRegister: PropTypes.func,
     onSort: PropTypes.func,
@@ -46,18 +42,15 @@ export default class DragProvider extends React.Component {
   items = [];
 
   getChildContext() {
-    const { onDragStart, onDrop, onDragEnd, onDragOver,
-      onDragEnter, onDragLeave, register, unRegister } = this;
+    const { onDragStart, onDragEnd,
+      onDragEnter, register, unRegister } = this;
     const { sourceNode, targetNode } = this.state;
     return {
       sourceNode,
       targetNode,
       onDragStart,
-      onDrop,
       onDragEnd,
-      onDragOver,
       onDragEnter,
-      onDragLeave,
       register,
       unRegister,
     };
@@ -72,8 +65,6 @@ export default class DragProvider extends React.Component {
     const idx = this.items.indexOf(inst);
     this.items.splice(idx, 1);
   }
-
-  onDrop = e => { }
 
   onDragStart = (e, inst) => {
     const clickPOS = { x: e.clientX, y: e.clientY };
@@ -91,6 +82,7 @@ export default class DragProvider extends React.Component {
       e.dataTransfer.effectAllowed = 'move';
     }
     if (e.dataTransfer.setData) {
+      // firefox must set, or it will open a new tab with current url
       e.dataTransfer.setData('text/plain', '');
     }
   }
@@ -102,10 +94,6 @@ export default class DragProvider extends React.Component {
       sourceNode: null,
       targetNode: null,
     });
-  }
-
-  onDragOver = (e) => {
-    e.preventDefault();
   }
 
   onDragEnter = (e, inst) => {
@@ -120,28 +108,16 @@ export default class DragProvider extends React.Component {
     }
   }
 
-  onMouseEnter = e => {
-    console.log(e);
-  }
-
-  onDragLeave = (e, inst) => {
-  }
-
   getRef = ref => {
     this.container = ref;
-  }
-
-  getFakeNode = ref => {
-    this.fakeDOM = ref;
   }
 
   render() {
     window.t = this;
     const { offsetLeft, offsetTop } = this.state;
     return (
-      <div className="drag-provider" ref={this.getRef}
+      <div ref={this.getRef}
         style={{ position: 'relative' }}
-        onMouseEnter={isFirefox ? this.onMouseEnter : undefined}
       >
         {this.props.children}
       </div>

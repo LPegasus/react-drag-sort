@@ -20,24 +20,12 @@ export default class DragItem extends React.Component {
     this.context.onDragStart(e, this);
   }
 
-  onDragOver = e => {
-    this.context.onDragOver(e, this);
-  }
-
   onDragEnter = e => {
     this.context.onDragEnter(e, this);
   }
 
   onDragEnd = e => {
     this.context.onDragEnd(e, this);
-  }
-
-  onDragLeave = e => {
-    this.context.onDragLeave(e, this);
-  }
-
-  onDrop = e => {
-    this.context.onDrop(e, this);
   }
 
   getRef = ref => {
@@ -47,11 +35,7 @@ export default class DragItem extends React.Component {
   render() {
     const dragProps = {
       onDragStart: this.onDragStart,
-      onDragOver: this.onDragOver,
-      onDrop: this.onDrop,
       onDragEnter: this.onDragEnter,
-      onDragLeave: this.onDragLeave,
-      onDragExit: this.onDragLeave,
       onDragEnd: this.onDragEnd,
     };
     return (
